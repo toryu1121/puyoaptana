@@ -1,0 +1,368 @@
+#############つもだけでもbで戻せるようにした、フィールドも一手戻したい#############################
+require "sdl"
+require 'matrixx'
+require "fpstimer"  # fpstimer.rb を読み込む
+require "lib/input"  # input.rb を読み込む
+#宣言部分
+#定数の定義
+SCREEN_W = 800
+SCREEN_H = 646
+MASU = SCREEN_H / 17
+WAKUSTART = (800-240*0.9)/2
+SOTOWIDTH = 8 * 38
+WAKUHIGH  = 520*0.9
+XXX = (800-SOTOWIDTH)/2+MASU
+YYY = MASU*15
+YOKOKUX = 800-(800-SOTOWIDTH)/2+MASU*2
+YOKOKUY = MASU*4
+#ウィンドウを開く
+SDL.init(SDL::INIT_EVERYTHING)
+screen = SDL.set_video_mode(SCREEN_W, SCREEN_H, 16, SDL::SWSURFACE)
+#タイマーの生成
+timer = FPSTimerLight.new
+timer.reset
+##予告空間
+yokoku = Matrix.new(1, 128)
+yokoku.inputstr(nil)
+yokoku.mat.map! do |ary|
+  ary.map!{|i| i= rand(4)}
+end
+sousa = yokoku.mat.shift
+puyo_a = sousa[0]
+puyo_b = sousa[1]
+##操作空間
+sousapuyo = Matrix.new(5, 3)
+widthcon = 2
+roll = [0, 1, 2, 3]
+sousapuyo.inputstr(nil)
+sousapuyo.mat[0][widthcon] = puyo_a
+sousapuyo.mat[1][widthcon] = puyo_b
+##ぷよの枠
+puyowaku = Matrix.new(1, 6, 1)
+puyowaku.inputstr(nil)
+fieldclone =[],[],[],[],[],[]
+chainecount = 0
+#背景の表示
+def backdisp(screen)
+  # 塗りつぶし(x, y, width, high, coler)
+  #下書き的なやつ[ピンク]
+  screen.fill_rect((800-SOTOWIDTH)/2, 0 , MASU*8, SCREEN_H, [255, 204, 244])
+  #外枠[オレンジ]
+  screen.fill_rect((800-SOTOWIDTH)/2, MASU*3,MASU*8,MASU*14,[255, 153, 102])
+  #フィールド[白]
+  screen.fill_rect((800-SOTOWIDTH)/2+MASU, MASU*4,MASU*6,MASU*12,[255, 255, 255])
+  #予告領域の外枠[オレンジ]
+  screen.fill_rect(800-(800-SOTOWIDTH)/2+MASU,MASU*3,MASU*4,MASU*4,[255, 153, 102])
+  #予告領域[白]
+  screen.fill_rect(800-(800-SOTOWIDTH)/2+MASU*2,MASU*4,MASU*2,MASU*2,[255, 255, 255])
+end
+#フィールドの色の判別式
+def puyowakudisp(puyowaku, screen)
+  for i in 0...6
+    for j in 0...13
+      case puyowaku[i][j]
+        when 0
+          # "red"
+          screen.fill_rect(XXX + MASU*i, YYY - MASU*j , MASU, MASU,[255, 51, 51])
+        when 1
+          # "green"
+          screen.fill_rect(XXX + MASU*i, YYY - MASU*j , MASU, MASU,[0, 153, 152])
+        when 2
+          # "blue"
+          screen.fill_rect(XXX + MASU*i, YYY - MASU*j , MASU, MASU,[0, 153, 255])
+        when 3
+          # "yerow"
+          screen.fill_rect(XXX + MASU*i, YYY - MASU*j , MASU, MASU,[255, 255, 0])
+      end
+    end
+  end
+end
+#操作領域の判別式
+def sousadisp(sousapuyo, screen)
+  for i in 0...3
+    for j in 0...6
+      case sousapuyo[i][j]
+        when 0
+          # "red"
+          screen.fill_rect(XXX + MASU*j, MASU*i , MASU, MASU,[255, 51, 51])
+        when 1
+          # "green"
+          screen.fill_rect(XXX + MASU*j, MASU*i , MASU, MASU,[0, 153, 152])
+        when 2
+          # "blue"
+          screen.fill_rect(XXX + MASU*j, MASU*i , MASU, MASU,[0, 153, 255])
+        when 3
+          # "yerow"
+          screen.fill_rect(XXX + MASU*j, MASU*i , MASU, MASU,[255, 255, 0])
+      end
+    end
+  end
+end
+#予告領域の判別式
+def yokokudisp(yokoku, screen)
+  for i in 0...2
+    for j in 0...2
+      case yokoku[i][j]
+        when 0
+          # "red"
+          screen.fill_rect(YOKOKUX + MASU*i, YOKOKUY + MASU*j , MASU, MASU,[255, 51, 51])
+        when 1
+          # "green"
+          screen.fill_rect(YOKOKUX + MASU*i, YOKOKUY + MASU*j , MASU, MASU,[0, 153, 152])
+        when 2
+          # "blue"
+          screen.fill_rect(YOKOKUX + MASU*i, YOKOKUY + MASU*j , MASU, MASU,[0, 153, 255])
+        when 3
+          # "yerow"
+          screen.fill_rect(YOKOKUX + MASU*i, YOKOKUY + MASU*j , MASU, MASU,[255, 255, 0])
+      end
+    end
+  end
+end
+
+
+#行列a,bが等しければtrueを返す
+def judge(a, b, i)
+  if a[i].size == b[i].size
+    if i == 0
+        return true
+    end
+    judge(a, b, i-1)
+  end
+end
+#連結数を返す
+def puyo(row, col, test)
+  c = test[row][col]
+  n = 1
+  test[row][col] = -1
+  #右
+  if (col + 1 < 13) && (test[row][col + 1] == c)
+    n+= puyo(row, col + 1, test)
+  end
+  #上
+  if (row - 1 >= 0) && (test[row - 1][col] == c)
+    n+= puyo(row - 1,col , test)
+  end
+  #下に行く
+  if (row+1 < 6) && (test[row+1][col]==c)
+      n+=puyo(row+1,col,test)
+  end
+  #左に行く
+  if (col - 1>= 0) && (test[row][col-1]==c)
+      n+=puyo(row ,col-1,test)
+  end
+  test[row][col] = c
+  return n
+end
+#連結部分をnilに置き換える
+def deletepuyo(row, col, test)
+  c = test[row][col]
+  n = 1
+  test[row][col] = nil
+  #右
+  if (col + 1 < 13) && (test[row][col + 1] == c)
+    n+= deletepuyo(row, col + 1, test)
+  end
+  #上
+  if (row - 1 >= 0) && (test[row - 1][col] == c)
+    n+= deletepuyo(row - 1,col , test)
+  end
+  #下に行く
+  if (row+1 < 6) && (test[row+1][col]==c)
+      n+=deletepuyo(row+1,col,test)
+  end
+  #左に行く
+  if (col - 1>= 0) && (test[row][col-1]==c)
+      n+=deletepuyo(row ,col-1,test)
+  end
+  return n
+end
+backupwaku = [],[],[],[],[],[]
+backdisp(screen)
+puyowakudisp(puyowaku.mat, screen)
+sousadisp(sousapuyo.mat, screen)
+yokokudisp(yokoku.mat, screen)
+timer.wait_frame do
+  screen.update_rect(0, 0, 0, 0)
+end
+input = 6
+turn = 0
+loop do
+input = 6
+chainecount = 0
+#入力処理部分
+  #キーが「押されたかどうか」を調べる
+  while event=SDL::Event2.poll
+    case event
+    when SDL::Event2::Quit #ウィンドウの×ボタンが押された
+      exit
+    when SDL::Event2::KeyDown
+      input = 1 if event.sym == SDL::Key::A
+      input = 2 if event.sym == SDL::Key::S
+      input = 3 if event.sym == SDL::Key::D
+      input = 4 if event.sym == SDL::Key::J
+      input = 5 if event.sym == SDL::Key::K
+      input = 7 if event.sym == SDL::Key::B
+      input = 8 if event.sym == SDL::Key::R
+      input = 9 if event.sym == SDL::Key::T
+      exit if event.sym == SDL::Key::ESCAPE
+    end
+  end
+case input
+  when 1 #画面左端以外ならwidthconを-1
+    widthcon-=1 unless widthcon == 0
+  when 2 #落下処理部分
+  when 3 #画面右端以外ならwidthcon+1
+    widthcon+=1 unless widthcon == 5
+  when 4 #rollを左回転
+    roll.unshift(roll.pop)
+  when 5 #rollを右回転
+    roll.push(roll.shift)
+  when 6
+  when 7
+    #p backupwaku =
+    unless turn == 0
+      p turn -= 1
+      sousa = yokoku.mat.pop
+      puyo_a = sousa[0]
+      puyo_b = sousa[1]
+      yokoku.mat.unshift(sousa)
+    end
+  when 8
+    puyowaku.mat.map!{|i|i.clear}
+    unless turn == 0
+      turn.times do
+      sousa = yokoku.mat.pop
+      puyo_a = sousa[0]
+      puyo_b = sousa[1]
+      yokoku.mat.unshift(sousa)
+      end
+    end
+    p turn = 0
+  when 9
+    yokoku.mat.map! do |ary|
+      ary.map!{|i| i=rand(4)}
+    end
+          puyo_a = sousa[0]
+      puyo_b = sousa[1]
+    turn = 0
+  else
+    break
+end
+
+#落下処理部分
+if input == 2
+  p turn+=1
+  case roll[0]
+      when 0
+        puyowaku.mat[widthcon].push(puyo_b) if puyowaku.mat[widthcon].size < 13
+        puyowaku.mat[widthcon].push(puyo_a) if puyowaku.mat[widthcon].size < 13
+      when 1 #右向いてる
+        puyowaku.mat[widthcon].push(puyo_b) if puyowaku.mat[widthcon].size < 13
+        puyowaku.mat[widthcon+1].push(puyo_a) if puyowaku.mat[widthcon+1].size < 13
+      when 2
+        puyowaku.mat[widthcon].push(puyo_a) if puyowaku.mat[widthcon].size < 13
+        puyowaku.mat[widthcon].push(puyo_b) if puyowaku.mat[widthcon].size < 13
+      when 3 #左向いてる
+        puyowaku.mat[widthcon].push(puyo_b) if puyowaku.mat[widthcon].size < 13
+        puyowaku.mat[widthcon-1].push(puyo_a) if puyowaku.mat[widthcon-1].size < 13
+    end
+ end
+
+#連鎖処理部分 もし2が入力されたのなら処理を行う
+if input == 2
+    widthcon = 2
+    loop do
+    roll.push(roll.shift)
+      break if roll[0] == 0
+    end
+    sousa = yokoku.mat.shift
+    puyo_a = sousa[0]
+    puyo_b = sousa[1]
+    yokoku.mat.push(sousa)
+    #落ちた瞬間の表示
+    puyowakudisp(puyowaku.mat, screen)
+    timer.wait_frame do
+      screen.update_rect(0, 0, 0, 0)
+    end
+  loop do
+    if judge(puyowaku.mat, fieldclone, 5)
+      break
+    end
+    fieldclone = puyowaku.mat.dup
+    #もしfield.mat[][]がnil以外なら
+    for i in 0...6
+      for j in 0...13
+        unless puyowaku.mat[i][j] == nil
+          #こいつが４以上ならもう一度-1で捜索して-1をnilに置き換える
+          if puyo(i, j, puyowaku.mat) >= 4
+            deletepuyo(i, j, puyowaku.mat)
+          end
+        end
+      end
+    end
+    #消える瞬間の表示
+    puyowakudisp(puyowaku.mat, screen)
+    timer.wait_frame do
+      screen.update_rect(0, 0, 0, 0)
+    end
+    puyowaku.mat.map! do |ary|
+      unless ary == []
+        ary = ary.compact
+      else
+        ary = []
+      end
+    end
+    #消えた後の表示
+    puyowakudisp(puyowaku.mat, screen)
+    timer.wait_frame do
+      screen.update_rect(0, 0, 0, 0)
+    end
+    p "#{chainecount}chaine" #連鎖数の表示
+    chainecount += 1
+  end
+end
+
+#操作処理部分
+case roll[0]
+  when 0
+    sousapuyo.inputstr(nil)
+    sousapuyo.mat[0][widthcon] = puyo_a
+    sousapuyo.mat[1][widthcon] = puyo_b
+  when 1
+    #もし一番右以外でこの操作がされたら
+    unless widthcon == 5
+      sousapuyo.inputstr(nil)
+      sousapuyo.mat[1][widthcon+1] = puyo_a
+      sousapuyo.mat[1][widthcon] = puyo_b
+    else
+      sousapuyo.inputstr(nil)
+      sousapuyo.mat[1][widthcon] = puyo_a
+      sousapuyo.mat[1][widthcon-1] = puyo_b
+      widthcon = 4
+    end
+  when 2
+    sousapuyo.inputstr(nil)
+    sousapuyo.mat[2][widthcon] = puyo_a
+    sousapuyo.mat[1][widthcon] = puyo_b
+  when 3
+    unless widthcon == 0
+      sousapuyo.inputstr(nil)
+      sousapuyo.mat[1][widthcon-1] = puyo_a
+      sousapuyo.mat[1][widthcon] = puyo_b
+    else
+      sousapuyo.inputstr(nil)
+      sousapuyo.mat[1][widthcon] = puyo_a
+      sousapuyo.mat[1][widthcon+1] = puyo_b
+      widthcon = 1
+    end
+end
+
+backdisp(screen)
+puyowakudisp(puyowaku.mat, screen)
+sousadisp(sousapuyo.mat, screen)
+yokokudisp(yokoku.mat, screen)
+  timer.wait_frame do
+    screen.update_rect(0, 0, 0, 0)
+  end
+end

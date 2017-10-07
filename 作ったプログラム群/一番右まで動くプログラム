@@ -1,0 +1,40 @@
+require "sdl"
+require "lib/fpstimer"  # fpstimer.rb を読み込む
+
+#定数の定義
+SCREEN_W = 640
+SCREEN_H = 480
+HOLIZON  = 400
+
+def load_image(fname)
+  image = SDL::Surface.load(fname)
+  image.set_color_key(SDL::SRCCOLORKEY, [255, 255, 255])
+  image
+end
+
+# SDL の初期化、ウィンドウの作成
+SDL.init(SDL::INIT_EVERYTHING)
+screen = SDL.set_video_mode(SCREEN_W, SCREEN_H, 16, SDL::SWSURFACE)
+
+# キャラの呼び出し
+chara = load_image("image/noschar.png")
+x = 0
+
+#タイマーの生成
+timer = FPSTimerLight.new
+timer.reset
+
+#xが横幅まで加算されるまで繰り返す
+while x < SCREEN_W
+  x += 8
+  # 塗りつぶし(x座標、y座標、幅、高さ、色)
+  screen.fill_rect(0, 0,       SCREEN_W, HOLIZON,          [128, 255, 255])
+  screen.fill_rect(0, HOLIZON, SCREEN_W, SCREEN_H-HOLIZON, [0, 128, 0])
+  #キャラクタの表示(画像,x座標, y座標),「chara.h」で読み込んだ画像の高さを取得する
+  screen.put(chara, x, HOLIZON-chara.h)
+  #タイマー処理
+  timer.wait_frame do
+    #画像の更新 (x座標、y座標、幅、高さ、色)
+    screen.update_rect(0, 0, 0, 0)
+  end
+end

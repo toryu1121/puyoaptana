@@ -1,0 +1,61 @@
+require "sdl"
+require "lib/fpstimer"
+
+SCREEN_W = 640
+SCREEN_H = 480
+HOLIZON  = 400
+
+def load_image(fname)
+  image = SDL::Surface.load(fname)
+  image.set_color_key(SDL::SRCCOLORKEY, [255, 255, 255])
+
+  image
+end
+
+SDL.init(SDL::INIT_EVERYTHING)
+screen = SDL.set_video_mode(SCREEN_W, SCREEN_H, 16, SDL::SWSURFACE)
+
+chara = load_image("image/noschar.png")
+x = 240 #初期位置の設定
+y = 100
+timer = FPSTimerLight.new
+timer.reset
+
+# メインループ
+loop do
+  #キーが「押されたかどうか」を調べる
+  while event=SDL::Event2.poll
+    case event
+    when SDL::Event2::Quit #ウィンドウの×ボタンが押された
+      exit
+    when SDL::Event2::KeyDown
+      exit if event.sym == SDL::Key::ESCAPE
+    end
+  end
+
+  #キーが「押されているかどうか」を調べる
+  SDL::Key.scan
+  x -= 8 if SDL::Key.press?(SDL::Key::LEFT)
+  x += 8 if SDL::Key.press?(SDL::Key::RIGHT)
+  y -= 8 if SDL::Key.press?(SDL::Key::UP)
+  y += 8 if SDL::Key.press?(SDL::Key::DOWN)
+
+  x -= 8 if SDL::Key.press?(SDL::Key::A)
+  x += 8 if SDL::Key.press?(SDL::Key::D)
+  y -= 8 if SDL::Key.press?(SDL::Key::W)
+  y += 8 if SDL::Key.press?(SDL::Key::S)
+
+  #入力に応じてキャラクターを動かす
+  x = 0 if x < 0
+  x = SCREEN_W-chara.w if x >= SCREEN_W-chara.w
+  y = 0 if y < 0
+  y = SCREEN_H-chara.h if y >= SCREEN_H-chara.h
+
+
+  screen.fill_rect(0, 0,       SCREEN_W, HOLIZON,          [128, 255, 255])
+  screen.fill_rect(0, HOLIZON, SCREEN_W, SCREEN_H-HOLIZON, [0, 128, 0])
+  screen.put(chara, x, y)
+  timer.wait_frame do
+    screen.update_rect(0, 0, 0, 0)
+  end
+end
