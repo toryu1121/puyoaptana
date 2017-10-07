@@ -1,0 +1,33 @@
+###############ぷよの枠、操作空間の作成########################
+require 'matrixx'
+#予告ぷよ空間
+yokoku = Matrix.new(1, 2)
+yokoku.inputstr(nil)
+yokoku.tdisp
+#操作空間
+sousapuyo = Matrix.new(5, 3)
+sousapuyo.inputstr(nil)
+sousapuyo.tdisp
+#ぷよの枠
+puyowaku = Matrix.new(5, 13)
+puyowaku.inputstr(nil)
+puyowaku.tdisp
+##################予告ぷよ空間での動き#####################
+require 'matrixx'
+#予告ぷよ空間
+yokoku = Matrix.new(1, 2)
+yokoku.inputstr(nil)
+
+#最初の初期化
+yokoku.mat.map! do |ary|
+  ary.map!{|i| i= rand(4)}
+end
+yokoku.tdisp
+
+10.times do
+  sousa = yokoku.mat.shift
+  print "#{sousa}\n"
+  yokoku.mat.push([rand(4), rand(4)])
+  yokoku.tdisp
+end
+####################################

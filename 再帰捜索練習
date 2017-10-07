@@ -1,0 +1,133 @@
+##########行の数え上げ、再帰処理、右に捜索###############################
+p test = [3, 1, 1, 1, 1]
+
+def puyo(ind, test)
+  c = test[ind]
+  n = 1
+  test[ind] = -1
+  #testsizeは横の幅
+  if (ind + 1 < test.size) && (test[ind + 1] == c)
+    n+= puyo(ind + 1, test)
+  end
+  return n
+end
+p puyo(1, test)
+################列の数え上げ、上に行く###########################
+require 'matrixx'
+include Mat
+test = []
+test[0] = [1, 0]
+test[1] = [2, 0]
+test[2] = [1, 0]
+test[3] = [1, 0]
+test[4] = [1, 0]
+tdisp(test)
+
+
+def puyo(row, col, test)
+  c = test[row][col]
+  n = 1
+  test[row][col] = -1
+  #上に数え上げるからrow-1は0以上
+  if (row - 1 >= 0) && (test[row - 1][col] == c)
+    n+= puyo(row - 1,col , test)
+  end
+  return n
+end
+
+p puyo(4, 0, test)
+######################斜め上に行く捜索###########################
+require 'matrixx'
+include Mat
+test = []
+test[0] = [0, 0, 0, 0, 1]
+test[1] = [0, 0, 0, 3, 0]
+test[2] = [0, 0, 1, 0, 0]
+test[3] = [0, 1, 0, 0, 0]
+test[4] = [1, 0, 0, 0, 0]
+tdisp(test)
+
+
+def puyo(row, col, test)
+  c = test[row][col]
+  n = 1
+  test[row][col] = -1
+  #上に数え上げるからrow-1は0以上
+  if (row - 1 >= 0) && (col + 1 < 5) && (test[row - 1][col + 1] == c)
+    n+= puyo(row - 1,col + 1 , test)
+  end
+  return n
+end
+
+p puyo(4, 0, test)
+#######################行列の数え上げ未完成#############################
+require 'matrixx'
+include Mat
+test = []
+test[0] = [0, 0, 0, 0, 0]
+test[1] = [0, 0, 0, 0, 0]
+test[2] = [0, 0, 0, 0, 0]
+test[3] = [0, 0, 0, 0, 0]
+test[4] = [0, 0, 0, 0, 0]
+tdisp(test)
+
+
+def puyo(row, col, test)
+  c = test[row][col]
+  n = 1
+  test[row][col] = -1
+  #右
+  if (col + 1 < 5) && (test[row][col + 1] == c)
+    n+= puyo(row, col + 1, test)
+  end
+  #上
+  if (row - 1 >= 0) && (test[row - 1][col] == c)
+    n+= puyo(row - 1,col , test)
+  end
+  #斜め上
+  if (row - 1 >= 0) && (col + 1 < 5) && (test[row - 1][col + 1] == c)
+    n+= puyo(row - 1,col + 1 , test)
+  end
+  return n
+end
+
+p puyo(4, 0, test)
+
+tdisp(test)
+#####################行列の数え上げ完成#################################
+require 'matrixx'
+include Mat
+test = []
+test[0] = [0, 0, 0, 0, 0]
+test[1] = [0, 0, 0, 0, 0]
+test[2] = [0, 1, 1, 0, 0]
+test[3] = [0, 0, 1, 0, 0]
+test[4] = [1, 1, 1, 0, 0]
+tdisp(test)
+
+
+def puyo(row, col, test)
+  c = test[row][col]
+  n = 1
+  test[row][col] = -1
+  #右
+  if (col + 1 < 5) && (test[row][col + 1] == c)
+    n+= puyo(row, col + 1, test)
+  end
+  #上
+  if (row - 1 >= 0) && (test[row - 1][col] == c)
+    n+= puyo(row - 1,col , test)
+  end
+  #下に行く
+  if (row+1 < 5) && (test[row+1][col]==c)
+      n+=puyo(row+1,col,test)
+  end
+  #左に行く
+  if (col - 1>= 0) && (test[row][col-1]==c)
+      n+=puyo(row ,col-1,test)
+  end
+  return n
+end
+p puyo(4, 0, test)
+tdisp(test)
+###################################################
