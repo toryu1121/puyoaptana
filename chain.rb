@@ -1,5 +1,6 @@
 require './matrixx'
 
+#枠？の作成とランダムで中に入れとるのね
 field = Matrix.new(12, 6)
 field.mat.map! do |ary|
   ary.map! do |i|
@@ -8,6 +9,10 @@ field.mat.map! do |ary|
 end
 field.tdisp
 
+#なんかのメソッド。ああ、再起処理させてるのねそれにしてもリターンが無駄な気が・・・
+#rubyで返り値使うなんて・・C言語じゃないんだから・・・
+#やっぱり"_"使わなきゃわかりにくくなるね
+#分かりにくい・・・
 def judge(a, b, i)
   if a[i].size == b[i].size
     if i == 0
@@ -17,6 +22,7 @@ def judge(a, b, i)
   end
 end
 
+#なにかのメソッド,探索のみ？必要？
 def puyo(row, col, test)
   c = test[row][col]
   n = 1
@@ -41,6 +47,7 @@ def puyo(row, col, test)
   return n
 end
 
+#めいんの処理のメソッド？探索したうえでnilに置き換えてる？
 def deletepuyo(row, col, test)
   c = test[row][col]
   n = 1
@@ -64,37 +71,40 @@ def deletepuyo(row, col, test)
   return n
 end
 
+
+#多分メインの処理の部分でここがループしてるんでしょうね
 fieldclone =[],[],[],[],[],[]
 chainecount = 0
-loop do
 
-if judge(field.mat, fieldclone, 5)
-  break
-end
-fieldclone = field.mat.dup
-#もしfield.mat[][]がnil以外なら
-for i in 0...6
-  for j in 0...13
-    unless field.mat[i][j] == nil
-      #こいつが４以上ならもう一度-1で捜索して-1をnilに置き換える
-      if puyo(i, j, field.mat) >= 4
-        deletepuyo(i, j, field.mat)
+loop do
+  
+  if judge(field.mat, fieldclone, 5)
+    break
+  end
+  
+  fieldclone = field.mat.dup
+  #もしfield.mat[][]がnil以外なら
+  for i in 0...6
+    for j in 0...13
+      unless field.mat[i][j] == nil
+        #こいつが４以上ならもう一度-1で捜索して-1をnilに置き換える
+        if puyo(i, j, field.mat) >= 4
+          deletepuyo(i, j, field.mat)
+        end
       end
     end
   end
-end
-
-field.tdisp
-field.mat.map! do |ary|
-  unless ary == []
-    ary = ary.compact
-  else
-    ary = []
+  
+  field.tdisp
+  field.mat.map! do |ary|
+    unless ary == []
+      ary = ary.compact
+    else
+      ary = []
+    end
   end
-end
-
-chainecount += 1
-p "#{chainecount}chaine"
-field.tdisp
-
+  
+  chainecount += 1
+  p "#{chainecount}chaine"
+  field.tdisp
 end

@@ -1,83 +1,37 @@
 require "./chapter"
 require './matrixx'
 
+#枠？の作成とランダムで中に入れとるのね
+
 class Story
   def initialize
-    #story01
-    story02
-    story03
+    #初期化
+    @field = Matrix.new(12, 6)
+    @fieldclone =[],[],[],[],[],[]
+    
+    story01
+    story02(@field.mat, @fieldclone, 5)
+    #story03
     p "finish"
   end
   
-  def story02
-    @sousapuyo = Matrix.new(5, 3)
-    @widthcon = 2
-    @roll = [0, 1, 2, 3]
-    #初期位置
-    @sousapuyo.inputstr(nil)
-    @sousapuyo.mat[0][@widthcon] = "a"
-    @sousapuyo.mat[1][@widthcon] = "b"
-    @sousapuyo.tdisp
+  def story01
+    @field.mat.map! do |ary|
+      ary.map! do |i|
+        i = rand(4)
+      end
+    end
+    @field.tdisp
   end
   
-  def story03
-    loop do
-      #ぷよの回転
-        #一回転する入力
-      @input = gets.to_i
-      case @input
-        when 1
-          @widthcon-=1 unless @widthcon == 0
-        when 2
-        when 3
-          @widthcon+=1 unless @widthcon == 5
-        when 4
-          @roll.unshift(@roll.pop)
-        when 5
-          @roll.push(@roll.shift)
-          else
-           break
+  #なんかjudgeというやつでしたね・・
+  def story02(a, b, i)
+    p "story02"
+    if a[i].size == b[i].size
+      if i == 0
+          return true
       end
-      
-      case @roll[0]
-        when 0
-          @sousapuyo.inputstr(nil)
-          @sousapuyo.mat[0][@widthcon] = "a"
-          @sousapuyo.mat[1][@widthcon] = "b"
-          @sousapuyo.tdisp
-        when 1
-          #もし一番右以外でこの操作がされたら
-          unless @widthcon == 5
-            @sousapuyo.inputstr(nil)
-            @sousapuyo.mat[1][@widthcon+1] = "a"
-            @sousapuyo.mat[1][@widthcon] = "b"
-            @sousapuyo.tdisp
-          else
-            @sousapuyo.inputstr(nil)
-            @sousapuyo.mat[1][@widthcon] = "a"
-            @sousapuyo.mat[1][@widthcon-1] = "b"
-            @sousapuyo.tdisp
-            @widthcon = 4
-          end
-        when 2
-          @sousapuyo.inputstr(nil)
-          @sousapuyo.mat[2][@widthcon] = "a"
-          @sousapuyo.mat[1][@widthcon] = "b"
-          @sousapuyo.tdisp
-        when 3
-          unless @widthcon == 0
-            @sousapuyo.inputstr(nil)
-            @sousapuyo.mat[1][@widthcon-1] = "a"
-            @sousapuyo.mat[1][@widthcon] = "b"
-            @sousapuyo.tdisp
-          else
-            @sousapuyo.inputstr(nil)
-            @sousapuyo.mat[1][@widthcon] = "a"
-            @sousapuyo.mat[1][@widthcon+1] = "b"
-            @sousapuyo.tdisp
-            @widthcon = 1
-          end
-      end
+      story02(a, b, i-1)
     end
   end
   
