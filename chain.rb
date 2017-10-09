@@ -4,7 +4,7 @@ require './matrixx'
 field = Matrix.new(12, 6)
 field.mat.map! do |ary|
   ary.map! do |i|
-    i = rand(4)
+    i = rand(4) + 1
   end
 end
 field.tdisp
