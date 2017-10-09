@@ -1,6 +1,6 @@
 #! ruby -Ku
 
-class Ary_test
+class Mat_con
   def initialize(input = 1)
     if input.is_a?(String)
       @str = input
@@ -67,10 +67,10 @@ class BB
     
     
     p @tom
-    test = Ary_test.new(@tom)
+    test = Mat_con.new(@tom)
     p test.mat
     
-    mumu = Ary_test.new(test.mat)
+    mumu = Mat_con.new(test.mat)
     p mumu.mat
   end
 end
