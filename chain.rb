@@ -23,6 +23,7 @@ def judge(a, b, i)
 end
 
 #なにかのメソッド,探索のみ？必要？
+#これも再起処理かぁいややねぇ
 def puyo(row, col, test)
   c = test[row][col]
   n = 1
@@ -82,6 +83,8 @@ loop do
     break
   end
   
+  
+  #正直for文を使っているのが信じられん・・・
   fieldclone = field.mat.dup
   #もしfield.mat[][]がnil以外なら
   for i in 0...6
