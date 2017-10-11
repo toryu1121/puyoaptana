@@ -1,3 +1,4 @@
+#! ruby -Ku
 require './matrixx'
 require './matconstr'
 require './puyoinitialize'
@@ -11,7 +12,7 @@ require './yokoku'
 class Action
   def initialize
     #puyo_start
-    key_input_ok
+    yokoku_test
   end
   
   
@@ -36,10 +37,15 @@ class Action
 =end
   end
   
-  def key_input_ok
+  def yokoku_test
     @puyoini = Puyo_ini.new
-    input_key = 1
-    Yokoku.new(@puyoini.yokoku, input_key)
+    p @puyoini.yokoku
+    input_key = 6
+    p puyo = [1, 1]
+    @yokoku_new = Yokoku.new(@puyoini.yokoku, input_key, puyo)
+    p @yokoku_new.yokoku
+    @yokoku_new.input_key
+    p @yokoku_new.puyo
   end
 end
 
