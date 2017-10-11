@@ -1,16 +1,8 @@
 require './matrixx'
 
 class Yokoku
-  def initialize
-    ##予告空間
-    @yokoku = Matrix.new(1, 128)
-    @yokoku.inputstr(nil)
-    @yokoku.mat.map! do |ary|
-      ary.map!{|i| i= rand(4)+ 1}
-    end
-    
-    @yokoku.tdisp
-    
+  def initialize(yokoku = 1, input_key = 1)
+    p yokoku
   end
   
   def story01
@@ -18,5 +10,3 @@ class Yokoku
   end
 end
 
-
-Yokoku.new
