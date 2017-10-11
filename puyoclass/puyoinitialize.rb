@@ -10,7 +10,7 @@ class Puyo_ini
     story02
     story03
   end
-  attr_accessor :yokoku, :sousa, :field, :puyo
+  attr_accessor :yokoku, :sousa, :field, :puyo, :width
   
   def story01
     ##予告空間
@@ -24,13 +24,14 @@ class Puyo_ini
   end
   
   def story02
+    @width = 2
     sousa = Matrix.new(5, 3)
     sousa.inputstr(9)
     @puyo = []
     @puyo[0] = rand(4) + 1
     @puyo[1] = rand(4) + 1
-    sousa.mat[0][2] = @puyo[0]
-    sousa.mat[1][2] = @puyo[1]
+    sousa.mat[0][@width] = @puyo[0]
+    sousa.mat[1][@width] = @puyo[1]
     sousa.tdisp
     @sousa = sousa.mat
   end

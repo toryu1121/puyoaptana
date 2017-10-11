@@ -3,6 +3,7 @@ require './matrixx'
 require './matconstr'
 require './puyoinitialize'
 require './yokoku'
+require './yokoku2field'
 
 #実行するためのクラス、railsのコントローラに値する
 
@@ -26,7 +27,7 @@ class Action
     @sousa = @puyoini.sousa
     @yokoku = @puyoini.yokoku
     @puyo = @puyoini.puyo
-    
+    @width = @puyoini.width
    # p Mat_con.new(@puyoini.sousa).mat
    # p Mat_con.new(@puyoini.yokoku).mat
    # p Mat_con.new(@puyoini.field).mat
@@ -42,23 +43,41 @@ class Action
   end
   
   def start_action
-    @input_key = 6
+    @input_key = 1
     p "puyo date:#{@puyo}"
     p "input_key: #{@input_key}"
   end
   
   def yokoku
-    p "######yokoku_test#######"   
-    p @puyoini.yokoku
-    @yokoku_new = Yokoku.new(@puyoini.yokoku, @input_key, @puyo)
-    p @yokoku = @yokoku_new.yokoku
-    p @puyo = @yokoku_new.puyo
+    p "######yokoku#######"   
+    p "yokoku: #{@yokoku}"
+    p "puyo: #{@puyo}"
+    p "width: #{@width}"
+    @yokoku_new = Yokoku.new(@puyoini.yokoku, @input_key, @puyo, @width)
+    @yokoku = @yokoku_new.yokoku
+    @puyo = @yokoku_new.puyo
+    @width = @yokoku_new.width
+    p "yokoku: #{@yokoku}"
+    p "puyo: #{@puyo}"
+    p "width: #{@width}"
   end
   
   def yokoku_to_field
     p "######yokoku_to_field######"
-    p @yokoku
-    p @puyo
+    #p "yokoku: #{@yokoku}"
+    #p "puyo: #{@puyo}"
+    #p "width: #{@width}"
+    p "yokoku: #{@yokoku}"
+    p "puyo: #{@puyo}"
+    p "width: #{@width}"
+    @yokoku_to_field =  Yokoku_to_field.new(@input_key, @puyo, @field, @width, @yokoku)
+    
+    @yokoku = @yokoku_to_field.yokoku
+    @puyo = @yokoku_to_field.puyo
+    @width = @yokoku_to_field.width
+    p "yokoku: #{@yokoku}"
+    p "puyo: #{@puyo}"
+    p "width: #{@width}"
   end
 end
 
