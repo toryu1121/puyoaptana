@@ -44,6 +44,7 @@ class Sousa
   def story02
     case @roll[0]
       when 0
+        
         @sousapuyo.inputstr(nil)
         @sousapuyo.mat[0][@widthcon] = "a"
         @sousapuyo.mat[1][@widthcon] = "b"

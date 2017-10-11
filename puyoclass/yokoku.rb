@@ -19,7 +19,7 @@ class Yokoku
         story06
     end
   end
-  attr_accessor :yokoku, :input_key, :puyo
+  attr_accessor :yokoku, :puyo
   
   #落下した時の予告空間の変化
   def story02

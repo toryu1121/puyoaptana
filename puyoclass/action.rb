@@ -11,21 +11,25 @@ require './yokoku'
 
 class Action
   def initialize
-    #puyo_start
-    yokoku_test
+    puyo_start
+    start_action
+    yokoku
+    yokoku_to_field
   end
   
   
   #スタートボタンを押したら開始されるやつ
   def puyo_start
+    p "######puyo_start######"
     @puyoini = Puyo_ini.new
-    @puyoini.field
-    @puyoini.sousa
-    @puyoini.yokoku
+    @field = @puyoini.field
+    @sousa = @puyoini.sousa
+    @yokoku = @puyoini.yokoku
+    @puyo = @puyoini.puyo
     
-    p Mat_con.new(@puyoini.sousa).mat
-    p Mat_con.new(@puyoini.yokoku).mat
-    p Mat_con.new(@puyoini.field).mat
+   # p Mat_con.new(@puyoini.sousa).mat
+   # p Mat_con.new(@puyoini.yokoku).mat
+   # p Mat_con.new(@puyoini.field).mat
     
 =begin
     Puyos.new do |i|
@@ -37,15 +41,24 @@ class Action
 =end
   end
   
-  def yokoku_test
-    @puyoini = Puyo_ini.new
+  def start_action
+    @input_key = 6
+    p "puyo date:#{@puyo}"
+    p "input_key: #{@input_key}"
+  end
+  
+  def yokoku
+    p "######yokoku_test#######"   
     p @puyoini.yokoku
-    input_key = 6
-    p puyo = [1, 1]
-    @yokoku_new = Yokoku.new(@puyoini.yokoku, input_key, puyo)
-    p @yokoku_new.yokoku
-    @yokoku_new.input_key
-    p @yokoku_new.puyo
+    @yokoku_new = Yokoku.new(@puyoini.yokoku, @input_key, @puyo)
+    p @yokoku = @yokoku_new.yokoku
+    p @puyo = @yokoku_new.puyo
+  end
+  
+  def yokoku_to_field
+    p "######yokoku_to_field######"
+    p @yokoku
+    p @puyo
   end
 end
 
