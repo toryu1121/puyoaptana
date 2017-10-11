@@ -1,0 +1,17 @@
+  case roll[0]
+      when 0
+        puyowaku.mat[widthcon].push(puyo_b) if puyowaku.mat[widthcon].size < 13
+        puyowaku.mat[widthcon].push(puyo_a) if puyowaku.mat[widthcon].size < 13
+      when 1 #右向いてる
+        puyowaku.mat[widthcon].push(puyo_b) if puyowaku.mat[widthcon].size < 13
+        puyowaku.mat[widthcon+1].push(puyo_a) if puyowaku.mat[widthcon+1].size < 13
+      when 2
+        puyowaku.mat[widthcon].push(puyo_a) if puyowaku.mat[widthcon].size < 13
+        puyowaku.mat[widthcon].push(puyo_b) if puyowaku.mat[widthcon].size < 13
+      when 3 #左向いてる
+        puyowaku.mat[widthcon].push(puyo_b) if puyowaku.mat[widthcon].size < 13
+        puyowaku.mat[widthcon-1].push(puyo_a) if puyowaku.mat[widthcon-1].size < 13
+    end
+ end
+ 
+ 

@@ -9,8 +9,9 @@ class Puyo_ini
     story01
     story02
     story03
+    @roll = [0, 1, 2, 3]
   end
-  attr_accessor :yokoku, :sousa, :field, :puyo, :width
+  attr_accessor :yokoku, :sousa, :field, :puyo, :width, :roll
   
   def story01
     ##予告空間

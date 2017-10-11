@@ -1,5 +1,5 @@
 # puyoの作成
-* 現在：chain12
+* 現在：chain13
 * いつもの環境作った
 	* クラスを組み合わせてぷよを作ります
 	* Action
@@ -10,4 +10,6 @@
 * chain10:予告クラスの完成・・かな
 * chain11:yokoku2field.rbの作成
 * chain12:yokoku_to_fieldクラスの途中経過、yokokuクラスの手直しを行った
-* chain13:yokoku_to_fieldクラスの続きの作成予定
+* chain13:yokoku_to_fieldクラスの途中経過、yokokuクラスの手直し,4,5の入力の時の
+動作の記述、rollすることにした
+* chain14:yokoku_to_fieldクラスの予定

@@ -4,11 +4,12 @@ require './matrixx'
 
 
 class Yokoku
-  def initialize(yokoku, input_key, puyo, width)
+  def initialize(yokoku, input_key, puyo, width, roll)
     @yokoku = yokoku
     @input_key = input_key
     @puyo = puyo
     @width = width
+    @roll = roll
     
     #p @yokoku
     #p @input_key = 6
@@ -20,6 +21,10 @@ class Yokoku
         story02
       when 3
         story03
+      when 4
+        story04
+      when 5
+        story05
       when 6
         story06
     else
@@ -44,6 +49,16 @@ class Yokoku
     p "story03:右を押しました"
     p "width を+1します"
     @width+=1 unless @width == 5
+  end
+  
+  def story04
+    p "story04:左回転します"
+    @roll.unshift(@roll.pop)
+  end
+  
+  def story05
+    p "story05:右回転します"
+    @roll.push(@roll.shift)
   end
   
   #1手先を固ぷよに、2手先をゾロぷよに変化

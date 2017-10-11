@@ -28,6 +28,7 @@ class Action
     @yokoku = @puyoini.yokoku
     @puyo = @puyoini.puyo
     @width = @puyoini.width
+    @roll = @puyoini.roll
    # p Mat_con.new(@puyoini.sousa).mat
    # p Mat_con.new(@puyoini.yokoku).mat
    # p Mat_con.new(@puyoini.field).mat
@@ -43,20 +44,22 @@ class Action
   end
   
   def start_action
-    @input_key = 1
+    @input_key = 4
     p "puyo date:#{@puyo}"
     p "input_key: #{@input_key}"
   end
   
   def yokoku
-    p "######yokoku#######"   
+    p "######yokoku#######"
+    p "roll: #{@roll}"   
     p "yokoku: #{@yokoku}"
     p "puyo: #{@puyo}"
     p "width: #{@width}"
-    @yokoku_new = Yokoku.new(@puyoini.yokoku, @input_key, @puyo, @width)
+    @yokoku_new = Yokoku.new(@puyoini.yokoku, @input_key, @puyo, @width, @roll)
     @yokoku = @yokoku_new.yokoku
     @puyo = @yokoku_new.puyo
     @width = @yokoku_new.width
+    p "roll: #{@roll}" 
     p "yokoku: #{@yokoku}"
     p "puyo: #{@puyo}"
     p "width: #{@width}"
@@ -67,14 +70,17 @@ class Action
     #p "yokoku: #{@yokoku}"
     #p "puyo: #{@puyo}"
     #p "width: #{@width}"
+    p "roll: #{@roll}" 
     p "yokoku: #{@yokoku}"
     p "puyo: #{@puyo}"
     p "width: #{@width}"
-    @yokoku_to_field =  Yokoku_to_field.new(@input_key, @puyo, @field, @width, @yokoku)
+    @yokoku_to_field =  Yokoku_to_field.new(@input_key, @puyo, @field, @width, @yokoku, @roll)
     
+    @roll = @yokoku_to_field.roll
     @yokoku = @yokoku_to_field.yokoku
     @puyo = @yokoku_to_field.puyo
     @width = @yokoku_to_field.width
+    p "roll: #{@roll}" 
     p "yokoku: #{@yokoku}"
     p "puyo: #{@puyo}"
     p "width: #{@width}"
