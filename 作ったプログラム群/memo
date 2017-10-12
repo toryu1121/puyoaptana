@@ -1,17 +1,34 @@
-  case roll[0]
-      when 0
-        puyowaku.mat[widthcon].push(puyo_b) if puyowaku.mat[widthcon].size < 13
-        puyowaku.mat[widthcon].push(puyo_a) if puyowaku.mat[widthcon].size < 13
-      when 1 #右向いてる
-        puyowaku.mat[widthcon].push(puyo_b) if puyowaku.mat[widthcon].size < 13
-        puyowaku.mat[widthcon+1].push(puyo_a) if puyowaku.mat[widthcon+1].size < 13
-      when 2
-        puyowaku.mat[widthcon].push(puyo_a) if puyowaku.mat[widthcon].size < 13
-        puyowaku.mat[widthcon].push(puyo_b) if puyowaku.mat[widthcon].size < 13
-      when 3 #左向いてる
-        puyowaku.mat[widthcon].push(puyo_b) if puyowaku.mat[widthcon].size < 13
-        puyowaku.mat[widthcon-1].push(puyo_a) if puyowaku.mat[widthcon-1].size < 13
+#操作処理部分
+case roll[0]
+  when 0
+    sousapuyo.inputstr(nil)
+    sousapuyo.mat[0][widthcon] = puyo_a
+    sousapuyo.mat[1][widthcon] = puyo_b
+  when 1
+    #もし一番右以外でこの操作がされたら
+    unless widthcon == 5
+      sousapuyo.inputstr(nil)
+      sousapuyo.mat[1][widthcon+1] = puyo_a
+      sousapuyo.mat[1][widthcon] = puyo_b
+    else
+      sousapuyo.inputstr(nil)
+      sousapuyo.mat[1][widthcon] = puyo_a
+      sousapuyo.mat[1][widthcon-1] = puyo_b
+      widthcon = 4
     end
- end
- 
- 
+  when 2
+    sousapuyo.inputstr(nil)
+    sousapuyo.mat[2][widthcon] = puyo_a
+    sousapuyo.mat[1][widthcon] = puyo_b
+  when 3
+    unless widthcon == 0
+      sousapuyo.inputstr(nil)
+      sousapuyo.mat[1][widthcon-1] = puyo_a
+      sousapuyo.mat[1][widthcon] = puyo_b
+    else
+      sousapuyo.inputstr(nil)
+      sousapuyo.mat[1][widthcon] = puyo_a
+      sousapuyo.mat[1][widthcon+1] = puyo_b
+      widthcon = 1
+    end
+end

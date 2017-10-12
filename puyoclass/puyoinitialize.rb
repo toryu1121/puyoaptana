@@ -33,7 +33,7 @@ class Puyo_ini
     @puyo[1] = rand(4) + 1
     sousa.mat[0][@width] = @puyo[0]
     sousa.mat[1][@width] = @puyo[1]
-    sousa.tdisp
+    #sousa.tdisp
     @sousa = sousa.mat
   end
   

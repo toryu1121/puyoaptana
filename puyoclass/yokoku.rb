@@ -28,42 +28,42 @@ class Yokoku
       when 6
         story06
     else
-      p "何も処理しません"
+      #p "何も処理しません"
     end
   end
   attr_accessor :yokoku, :puyo, :width
   
   def story01
-    p "story01:左を押しました"
-    p "width を-1します"
+    #p "story01:左を押しました"
+    #p "width を-1します"
     @width-=1 unless @width == 0
   end
   
   #落下した時の予告空間の変化
   def story02
-    p "story02:下を押しました"
-    p "ここでは処理を行いません"
+    #p "story02:下を押しました"
+    #p "ここでは処理を行いません"
   end
   
   def story03
-    p "story03:右を押しました"
-    p "width を+1します"
+    #p "story03:右を押しました"
+    #p "width を+1します"
     @width+=1 unless @width == 5
   end
   
   def story04
-    p "story04:左回転します"
+    #p "story04:左回転します"
     @roll.unshift(@roll.pop)
   end
   
   def story05
-    p "story05:右回転します"
+    #p "story05:右回転します"
     @roll.push(@roll.shift)
   end
   
   #1手先を固ぷよに、2手先をゾロぷよに変化
   def story06
-    p "story06:1手先を固ぷよに、2手先をゾロぷよに変化させます"
+    #p "story06:1手先を固ぷよに、2手先をゾロぷよに変化させます"
     test = rand(4) + 1
     @yokoku[0] = [6, 6]
     @yokoku[1] = [test, test]
