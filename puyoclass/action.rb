@@ -58,7 +58,7 @@ class Action
   end
   
   def yokoku
-    p "######yokoku#######"
+    #p "######yokoku#######"
     
 =begin
     p "roll: #{@roll}"   

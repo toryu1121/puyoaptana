@@ -73,12 +73,11 @@ class Story
         @tom += 1
       end
     end
-    
-    #これで@tomが6なら連鎖終了でＯＫ(一致数が6)    
+        #これで@tomが6なら連鎖終了でＯＫ(一致数が6)    
     p @tom
-    
   end
   
 end
+
 
 Story.new
